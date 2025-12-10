@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">פאנל נגרות</string>
+    <string name="title_activity_main">פאנל נגרות</string>
+    <string name="package_name">com.carpenter.panel</string>
+    <string name="custom_url_scheme">com.carpenter.panel</string>
+</resources>

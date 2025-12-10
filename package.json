@@ -1,0 +1,35 @@
+{
+  "name": "carpenter-panel",
+  "version": "1.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "cap:add": "npx cap add",
+    "cap:sync": "npx cap sync",
+    "cap:open": "npx cap open",
+    "cap:build": "npm run build && npx cap sync",
+    "build:apk": "npm run build && npx cap sync && cd android && gradlew.bat assembleDebug && cd ..",
+    "build:ios": "npm run build && npx cap sync && cd ios/App && xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -archivePath build/App.xcarchive archive && xcodebuild -exportArchive -archivePath build/App.xcarchive -exportPath build/ipa -exportOptionsPlist ExportOptions.plist && cd ../.."
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@supabase/supabase-js": "^2.87.1",
+    "jspdf": "^3.0.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "workbox-window": "^7.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react-swc": "^4.1.0",
+    "sharp": "^0.34.5",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.0"
+  }
+}

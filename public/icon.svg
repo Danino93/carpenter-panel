@@ -1,0 +1,63 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="toolGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e7ff;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- רקע מעוגל -->
+  <rect width="512" height="512" rx="120" fill="url(#bgGradient)"/>
+  
+  <!-- פטיש -->
+  <g filter="url(#glow)" transform="translate(256, 256)">
+    <!-- ידית פטיש -->
+    <rect x="-120" y="60" width="240" height="30" rx="15" fill="url(#toolGradient)" opacity="0.9"/>
+    
+    <!-- ראש פטיש - חלק עליון -->
+    <rect x="100" y="-40" width="80" height="100" rx="10" fill="url(#toolGradient)" opacity="0.95"/>
+    
+    <!-- ראש פטיש - חלק תחתון (לחיתוך) -->
+    <rect x="100" y="60" width="80" height="40" rx="8" fill="url(#toolGradient)" opacity="0.9"/>
+    
+    <!-- קווי פרטים על הפטיש -->
+    <line x1="110" y1="-30" x2="110" y2="50" stroke="#667eea" stroke-width="4" opacity="0.6"/>
+    <line x1="170" y1="-30" x2="170" y2="50" stroke="#667eea" stroke-width="4" opacity="0.6"/>
+    <line x1="110" y1="70" x2="170" y2="70" stroke="#667eea" stroke-width="3" opacity="0.5"/>
+    
+    <!-- מסור (אופציונלי) -->
+    <g transform="translate(-150, -80) rotate(-15)">
+      <rect x="0" y="0" width="100" height="8" rx="4" fill="url(#toolGradient)" opacity="0.85"/>
+      <!-- שיניים של מסור -->
+      <polygon points="10,0 15,8 20,0" fill="#667eea" opacity="0.7"/>
+      <polygon points="30,0 35,8 40,0" fill="#667eea" opacity="0.7"/>
+      <polygon points="50,0 55,8 60,0" fill="#667eea" opacity="0.7"/>
+      <polygon points="70,0 75,8 80,0" fill="#667eea" opacity="0.7"/>
+      <polygon points="90,0 95,8 100,0" fill="#667eea" opacity="0.7"/>
+    </g>
+  </g>
+  
+  <!-- כוכבים/נקודות זוהרות -->
+  <circle cx="100" cy="100" r="8" fill="#ffffff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="412" cy="150" r="6" fill="#ffffff" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="150" cy="400" r="7" fill="#ffffff" opacity="0.75">
+    <animate attributeName="opacity" values="0.75;0.25;0.75" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+</svg>
+
