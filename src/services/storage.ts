@@ -1,34 +1,26 @@
 import { Job, JobInput, JobResult, MaterialType } from '../calculators/types'
-import {
-  isSupabaseAvailable,
-  saveJobToSupabase,
-  getAllJobsFromSupabase,
-  getJobByIdFromSupabase,
-  deleteJobFromSupabase,
-} from './supabase'
 
 const STORAGE_KEYS = {
   JOBS: 'carpenter_panel_jobs',
   PRICING: 'carpenter_panel_pricing',
   SETTINGS: 'carpenter_panel_settings',
+  CUSTOMERS: 'carpenter_panel_customers',
+  TEMPLATES: 'carpenter_panel_templates',
 } as const
 
 // ===== Jobs Storage =====
-// שמירה רק ב-Supabase - לא ב-LocalStorage (יותר טוב למובייל)
-export async function saveJob(job: Job): Promise<void> {
-  if (!isSupabaseAvailable()) {
-    throw new Error('Supabase לא מוגדר. אנא הגדר VITE_SUPABASE_URL ו-VITE_SUPABASE_ANON_KEY')
-  }
-  
-  // שמירה רק ב-Supabase
-  const saved = await saveJobToSupabase(job)
-  if (!saved) {
-    throw new Error('שגיאה בשמירת העבודה. בדוק את החיבור ל-Supabase')
+// שמירה מקומית ב-LocalStorage על הטלפון
+function getAllJobsFromStorage(): Job[] {
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.JOBS)
+    return data ? JSON.parse(data) : []
+  } catch {
+    return []
   }
 }
 
-function saveJobToLocalStorage(job: Job): void {
-  const jobs = getAllJobsFromLocalStorage()
+export async function saveJob(job: Job): Promise<void> {
+  const jobs = getAllJobsFromStorage()
   const existingIndex = jobs.findIndex((j) => j.id === job.id)
   
   if (existingIndex >= 0) {
@@ -41,41 +33,18 @@ function saveJobToLocalStorage(job: Job): void {
 }
 
 export async function getAllJobs(): Promise<Job[]> {
-  if (!isSupabaseAvailable()) {
-    throw new Error('Supabase לא מוגדר. אנא הגדר VITE_SUPABASE_URL ו-VITE_SUPABASE_ANON_KEY')
-  }
-  
-  // קריאה רק מ-Supabase
-  return await getAllJobsFromSupabase()
-}
-
-function getAllJobsFromLocalStorage(): Job[] {
-  try {
-    const data = localStorage.getItem(STORAGE_KEYS.JOBS)
-    return data ? JSON.parse(data) : []
-  } catch {
-    return []
-  }
+  return getAllJobsFromStorage()
 }
 
 export async function getJobById(id: string): Promise<Job | null> {
-  if (isSupabaseAvailable()) {
-    const job = await getJobByIdFromSupabase(id)
-    if (job) return job
-  }
-  
-  // Fallback ל-LocalStorage
-  const jobs = getAllJobsFromLocalStorage()
+  const jobs = await getAllJobs()
   return jobs.find((j) => j.id === id) || null
 }
 
 export async function deleteJob(id: string): Promise<void> {
-  if (!isSupabaseAvailable()) {
-    throw new Error('Supabase לא מוגדר. אנא הגדר VITE_SUPABASE_URL ו-VITE_SUPABASE_ANON_KEY')
-  }
-  
-  // מחיקה רק מ-Supabase
-  await deleteJobFromSupabase(id)
+  const jobs = await getAllJobs()
+  const filtered = jobs.filter((j) => j.id !== id)
+  localStorage.setItem(STORAGE_KEYS.JOBS, JSON.stringify(filtered))
 }
 
 export function createJobFromInput(input: JobInput, result?: JobResult): Job {

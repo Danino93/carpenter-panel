@@ -1,51 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { supabase, isSupabaseAvailable } from '../../services/supabase'
+import { isAuthenticated, getCurrentUsername, logout } from '../../services/localAuth'
 import { LoginScreen } from './LoginScreen'
-import { User } from '@supabase/supabase-js'
 
 interface Props {
   children: React.ReactNode
 }
 
 export const AuthGuard: React.FC<Props> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null)
+  const [username, setUsername] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {
     checkUser()
-
-    // האזנה לשינויים במצב ההתחברות
-    if (isSupabaseAvailable() && supabase) {
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user ?? null)
-        setShowLogin(!session?.user)
-      })
-
-      return () => subscription.unsubscribe()
-    } else {
-      // אם אין Supabase - אפשר לעבוד בלי התחברות
-      setLoading(false)
-      setShowLogin(false)
-    }
   }, [])
 
-  const checkUser = async () => {
-    if (!isSupabaseAvailable() || !supabase) {
-      setLoading(false)
-      setShowLogin(false)
-      return
-    }
-
+  const checkUser = () => {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
-      setUser(user)
-      setShowLogin(!user)
+      const authenticated = isAuthenticated()
+      const currentUsername = getCurrentUsername()
+      
+      setUsername(currentUsername)
+      setShowLogin(!authenticated)
     } catch (error) {
       console.error('Error checking user:', error)
       setShowLogin(true)
@@ -55,16 +31,13 @@ export const AuthGuard: React.FC<Props> = ({ children }) => {
   }
 
   const handleLoginSuccess = () => {
-    setShowLogin(false)
     checkUser()
   }
 
-  const handleLogout = async () => {
-    if (supabase) {
-      await supabase.auth.signOut()
-      setUser(null)
-      setShowLogin(true)
-    }
+  const handleLogout = () => {
+    logout()
+    setUsername(null)
+    setShowLogin(true)
   }
 
   if (loading) {
@@ -84,7 +57,7 @@ export const AuthGuard: React.FC<Props> = ({ children }) => {
 
   return (
     <>
-      {user && (
+      {username && (
         <div style={{
           position: 'fixed',
           top: '16px',
@@ -99,7 +72,7 @@ export const AuthGuard: React.FC<Props> = ({ children }) => {
           alignItems: 'center',
           gap: '12px'
         }}>
-          <span>👤 {user.email}</span>
+          <span>👤 {username}</span>
           <button
             onClick={handleLogout}
             style={{
